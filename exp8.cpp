@@ -1,106 +1,110 @@
-#include<stdio.h> 
-#include<ctype.h>
+#include<stdio.h>
+#include<conio.h>
 #include<string.h>
-int limit, x = 0;
-char production[10][10], array[10];
- 
-void find_first(char ch);
-void find_follow(char ch);
-void Array_Manipulation(char ch);
- 
+char input[100];
+int i,l;
+int E(void);
+int T(void);
+int EP(void);
+int TP(void);
+int F(void);
 int main()
 {
-      int count;
-      char option, ch;
-      printf("\nEnter Total Number of Productions:\t");
-      scanf("%d", &limit);
-      for(count = 0; count < limit; count++)
-      {
-            printf("\nValue of Production Number [%d]:\t", count + 1);
-            scanf("%s", production[count]);
-      }
-      do
-      {
-            x = 0;
-            printf("\nEnter production Value to Find Follow:\t");
-            scanf(" %c", &ch);
-            find_follow(ch);
-            printf("\nFollow Value of %c:\t{ ", ch);
-            for(count = 0; count < x; count++)
-            {
-                  printf("%c ", array[count]);
-            }
-            printf("}\n");
-            printf("To Continue, Press Y:\t");
-            scanf(" %c", &option);
-      }while(option == 'y' || option == 'Y');
-      return 0;
+	printf("\nRecursive descent parsing for the following grammar\n"); printf("\nE->TE'\nE'->+TE'/@\nT->FT'\nT'->*FT'/@\nF->(E)/ID\n"); printf("\nEnter the string to be checked:"); gets(input);
+	if(E())
+	{
+		if(input[i+1]=='\0')
+			printf("\nString is accepted");
+		else
+			printf("\nString is not accepted");
+	}
+	else
+		printf("\nString not accepted");
+	getch();
+	return 0;
 }
- 
-void find_follow(char ch)
+E()
 {
-      int i, j;
-      int length = strlen(production[i]);
-      if(production[0][0] == ch)
-      {
-            Array_Manipulation('$');
-      }
-      for(i = 0; i < limit; i++)
-      {
-            for(j = 2; j < length; j++)
-            {
-                  if(production[i][j] == ch)
-                  {
-                        if(production[i][j + 1] != '\0')
-                        {
-                              find_first(production[i][j + 1]);
-                        }
-                        if(production[i][j + 1] == '\0' && ch != production[i][0])
-                        {     
-                              find_follow(production[i][0]);
-                        }
-                  }
-            }
-      }
+	if(T())
+	{
+		if(EP())
+			return(1);
+		else
+			return(0);
+	}
+	else
+		return(0);
 }
- 
-void find_first(char ch)
+EP()
 {
-      int i, k;
-      if(!(isupper(ch)))
-      {
-            Array_Manipulation(ch);
-      }
-      for(k = 0; k < limit; k++)
-      {
-            if(production[k][0] == ch)
-            {
-                  if(production[k][2] == '$') 
-                  {
-                        find_follow(production[i][0]);
-                  }
-                  else if(islower(production[k][2]))
-                  {
-                        Array_Manipulation(production[k][2]);
-                  }
-                  else 
-                  {
-                        find_first(production[k][2]);
-                  }
-            }
-      }
+	if(input[i]=='+')
+	{
+		i++;
+		if(T())
+		{
+			if(EP())
+				return(1);
+			else
+				return(0);
+		}
+		else
+			return(0);
+	}
+	else
+		return(1);
 }
- 
-void Array_Manipulation(char ch)
+T()
 {
-      int count;
-      for(count = 0; count <= x; count++)
-      {
-            if(array[count] == ch)
-            {
-                  return;
-            }
-      }
-      array[x++] = ch;
+	if(F())
+	{
+		if(TP())
+			return(1);
+		else
+			return(0);
+	}
+	else
+		return(0);
+}
+TP()
+{
+	if(input[i]=='*')
+	{
+		i++;
+		if(F())
+		{
+			if(TP())
+				return(1);
+			else
+				return(0);
+		}
+		else
+			return(0);
+	}
+	else
+		return(1);
+}
+F()
+{
+	if(input[i]=='(')
+	{
+		i++;
+		if(E())
+		{
+			if(input[i]==')')
+				i++;
+				return(1);
+		}
+		else
+			return(0);
+	}
+	else if(input[i]>='a'&&input[i]<='z'||input[i]>='A'&&input[i]<='Z')
+	{
+		i++;
+		return(1);
+	}
+	else
+		return(0);
+
+
 }
 
